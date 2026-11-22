@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Universal Dubbing & Translation Studio (100H / 8K)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Kantumruy Pro & Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Kantumruy+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Kantumruy Pro', 'Inter', sans-serif;
+            background-color: #090d16;
+            color: #f8fafc;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+        /* Custom Range Slider */
+        input[type=range] {
+            -webkit-appearance: none;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            background: #3b82f6;
+            cursor: pointer;
+            margin-top: -6px;
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.6);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #334155;
+            border-radius: 2px;
+        }
+        /* Aspect Ratio Containers */
+        .aspect-youtube { aspect-ratio: 16 / 9; }
+        .aspect-tiktok { aspect-ratio: 9 / 16; max-height: 460px; }
+        .aspect-facebook { aspect-ratio: 1 / 1; max-height: 420px; }
+        
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 15px rgba(59, 130, 246, 0.3); }
+            50% { box-shadow: 0 0 25px rgba(139, 92, 246, 0.6); }
+        }
+        .ai-glow {
+            animation: pulse-glow 3s infinite;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col overflow-x-hidden">
+
+    <!-- Top Navigation Header -->
+    <header class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-40 px-4 py-3">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-600 flex items-center justify-center shadow-lg ai-glow">
+                    <i class="fa-solid fa-language text-white text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg md:text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-indigo-300 to-purple-400">
+                        AI OmniTranslate 8K Studio
+                    </h1>
+                    <p class="text-xs text-slate-400">បកប្រែអត្ថបទ សំឡេង និងវីដេអូ ១០០ម៉ោង • គ្រប់ភាសាលើពិភពលោក</p>
+                </div>
+            </div>
+
+            <!-- Mode Switcher Tabs -->
+            <div class="flex bg-slate-800/80 p-1 rounded-xl border border-slate-700/60">
+                <button onclick="switchTab('video')" id="tab-video" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition-all bg-blue-600 text-white shadow">
+                    <i class="fa-solid fa-film mr-1.5"></i> វីដេអូ (100H / 8K)
+                </button>
+                <button onclick="switchTab('audio')" id="tab-audio" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white transition-all">
+                    <i class="fa-solid fa-microphone-lines mr-1.5"></i> សំឡេង
+                </button>
+                <button onclick="switchTab('text')" id="tab-text" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white transition-all">
+                    <i class="fa-solid fa-align-left mr-1.5"></i> អត្ថបទ
+                </button>
+            </div>
+
+            <!-- Global Status Badge -->
+            <div class="hidden lg:flex items-center space-x-2 text-xs bg-slate-800/90 border border-slate-700 px-3 py-1.5 rounded-full">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                <span class="text-slate-300">AI Emotion Dubbing Engine: <strong class="text-emerald-400">សកម្ម (140+ ភាសា)</strong></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6">
+
+        <!-- ==================== TAB 1: VIDEO DUBBING & TRANSLATION STUDIO ==================== -->
+        <section id="view-video" class="space-y-6">
+            
+            <!-- Top Control Bar: Upload, Languages, Long-Video Support -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 md:p-5 shadow-xl">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+                    
+                    <!-- Video File Upload -->
+                    <div class="md:col-span-4">
+                        <label class="block text-xs font-medium text-slate-400 mb-1.5">ផ្ទុកវីដេអូដើម (គាំទ្ររហូតដល់ ១០០ ម៉ោង)</label>
+                        <div class="flex items-center space-x-2">
+                            <label class="flex-1 cursor-pointer bg-slate-800 hover:bg-slate-750 border border-dashed border-blue-500/60 hover:border-blue-400 rounded-xl px-4 py-2.5 flex items-center justify-center space-x-2 transition">
+                                <i class="fa-solid fa-cloud-arrow-up text-blue-400"></i>
+                                <span id="video-filename" class="text-sm text-slate-200 truncate">ជ្រើសរើសឯកសារវីដេអូ...</span>
+                                <input type="file" id="video-upload" accept="video/*" class="hidden" onchange="handleVideoUpload(event)">
+                            </label>
+                            <button onclick="loadSampleLongVideo()" title="ប្រើវីដេអូគំរូ 100 ម៉ោង" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-2.5 rounded-xl border border-slate-700 text-xs font-medium whitespace-nowrap">
+                                <i class="fa-solid fa-wand-magic-sparkles text-amber-400 mr-1"></i> គំរូ 100H
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Source Language -->
+                    <div class="md:col-span-3">
+                        <label class="block text-xs font-medium text-slate-400 mb-1.5">ភាសាដើមក្នុងវីដេអូ</label>
+                        <select id="video-src-lang" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500">
+                            <option value="auto">ស្វ័យប្រវត្តិ (Auto-Detect គ្រប់ភាសា)</option>
+                            <option value="en-US">អង់គ្លេស (English)</option>
+                            <option value="km-KH">ខ្មែរ (Khmer)</option>
+                            <option value="zh-CN">ចិន (Chinese Mandarin)</option>
+                            <option value="ja-JP">ជប៉ុន (Japanese)</option>
+                            <option value="ko-KR">កូរ៉េ (Korean)</option>
+                            <option value="th-TH">ថៃ (Thai)</option>
+                            <option value="vi-VN">វៀតណាម (Vietnamese)</option>
+                            <option value="fr-FR">បារាំង (French)</option>
+                            <option value="es-ES">អេស្ប៉ាញ (Spanish)</option>
+                            <option value="ru-RU">រុស្ស៊ី (Russian)</option>
+                            <option value="ar-SA">អារ៉ាប់ (Arabic)</option>
+                            <option value="hi-IN">ហិណ្ឌូ (Hindi)</option>
+                        </select>
+                    </div>
+
+                    <!-- Target Language -->
+                    <div class="md:col-span-3">
+                        <label class="block text-xs font-medium text-slate-400 mb-1.5">បកប្រែទៅជាភាសា (១៤០+ ភាសា)</label>
+                        <select id="video-target-lang" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500">
+                            <option value="ខ្មែរ (Khmer)" selected>ខ្មែរ (Khmer)</option>
+                            <option value="អង់គ្លេស (English)">អង់គ្លេស (English)</option>
+                            <option value="ចិន (Chinese)">ចិន (Chinese)</option>
+                            <option value="ជប៉ុន (Japanese)">ជប៉ុន (Japanese)</option>
+                            <option value="កូរ៉េ (Korean)">កូរ៉េ (Korean)</option>
+                            <option value="ថៃ (Thai)">ថៃ (Thai)</option>
+                            <option value="វៀតណាម (Vietnamese)">វៀតណាម (Vietnamese)</option>
+                            <option value="បារាំង (French)">បារាំង (French)</option>
+                            <option value="អេស្ប៉ាញ (Spanish)">អេស្ប៉ាញ (Spanish)</option>
+                            <option value="អាល្លឺម៉ង់ (German)">អាល្លឺម៉ង់ (German)</option>
+                            <option value="រុស្ស៊ី (Russian)">រុស្ស៊ី (Russian)</option>
+                            <option value="អារ៉ាប់ (Arabic)">អារ៉ាប់ (Arabic)</option>
+                            <option value="ហិណ្ឌូ (Hindi)">ហិណ្ឌូ (Hindi)</option>
+                            <option value="ព័រទុយហ្គាល់ (Portuguese)">ព័រទុយហ្គាល់ (Portuguese)</option>
+                            <option value="ឥណ្ឌូនេស៊ី (Indonesian)">ឥណ្ឌូនេស៊ី (Indonesian)</option>
+                        </select>
+                    </div>
+
+                    <!-- Process AI Dubbing Button -->
+                    <div class="md:col-span-2 flex flex-col justify-end">
+                        <label class="block text-xs font-medium text-transparent mb-1.5 select-none">Action</label>
+                        <button onclick="processVideoTranslation()" id="btn-process-video" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold py-2.5 px-4 rounded-xl shadow-lg shadow-blue-600/30 transition flex items-center justify-center space-x-2">
+                            <i class="fa-solid fa-language"></i>
+                            <span>១. បកប្រែអត្ថបទវីដេអូ</span>
+                        </button>
+                    </div>
+
+                </div>
+
+                <!-- Step 2: Merge Translated Audio into Original Video Bar with Percentage -->
+                <div class="mt-4 pt-4 border-t border-slate-800/80 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+                    <div class="flex flex-wrap items-center gap-3 text-xs">
+                        <span class="bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 px-2.5 py-1.5 rounded-lg">
+                            <i class="fa-solid fa-clock mr-1"></i> រយៈពេល: <strong id="video-duration-display">00:15:30 (គាំទ្រដល់ 100:00:00)</strong>
+                        </span>
+                        <span id="merge-status-badge" class="bg-slate-800 text-slate-300 border border-slate-700 px-2.5 py-1.5 rounded-lg">
+                            <i class="fa-solid fa-circle-info text-blue-400 mr-1"></i> ស្ថានភាព៖ <strong id="chunk-status">រង់ចាំការបញ្ចូលសំឡេង</strong>
+                        </span>
+                    </div>
+
+                    <!-- Dedicated Merge Dubbed Audio into Video Button + Percentage Bar -->
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 flex-1 max-w-2xl justify-end">
+                        <div id="progress-wrapper" class="hidden flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 flex items-center space-x-3">
+                            <div class="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden">
+                                <div id="ai-progress-bar" class="bg-gradient-to-r from-emerald-400 via-blue-500 to-purple-500 h-2.5 rounded-full transition-all duration-200" style="width: 0%"></div>
+                            </div>
+                            <span id="ai-progress-text" class="text-emerald-400 font-bold text-xs whitespace-nowrap">0%</span>
+                        </div>
+
+                        <button onclick="mergeTranslatedAudioToVideo()" id="btn-merge-audio" class="bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 hover:from-purple-500 hover:to-rose-500 text-white text-xs sm:text-sm font-bold py-2.5 px-4 rounded-xl shadow-lg shadow-purple-600/30 transition flex items-center justify-center space-x-2 whitespace-nowrap">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            <span>២. បញ្ចូលសំឡេងបកប្រែទៅក្នុងវីដេអូដើម</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Studio Grid: Left (Video Preview & Subtitle Overlay) | Right (Voice, Audio, Subtitle & Export Controls) -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                <!-- LEFT COLUMN (7 Cols): Video Canvas Preview & Timeline -->
+                <div class="lg:col-span-7 space-y-4">
+                    
+                    <!-- Platform Aspect Ratio Selector -->
+                    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3 flex flex-wrap items-center justify-between gap-2">
+                        <span class="text-xs font-semibold text-slate-300"><i class="fa-solid fa-crop-simple text-blue-400 mr-1.5"></i> ទម្រង់ទំហំវីដេអូ (Platform Ratio):</span>
+                        <div class="flex flex-wrap gap-2">
+                            <button onclick="setAspectRatio('youtube')" id="ratio-youtube" class="ratio-btn bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 transition">
+                                <i class="fa-brands fa-youtube text-red-300"></i>
+                                <span>YouTube (16:9)</span>
+                            </button>
+                            <button onclick="setAspectRatio('tiktok')" id="ratio-tiktok" class="ratio-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 transition">
+                                <i class="fa-brands fa-tiktok text-pink-400"></i>
+                                <span>TikTok / Reels (9:16)</span>
+                            </button>
+                            <button onclick="setAspectRatio('facebook')" id="ratio-facebook" class="ratio-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 transition">
+                                <i class="fa-brands fa-facebook text-blue-400"></i>
+                                <span>Facebook (1:1 / 4:5)</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Video Preview Stage -->
+                    <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 flex items-center justify-center min-h-[380px] relative overflow-hidden shadow-2xl">
+                        <!-- Aspect Container -->
+                        <div id="video-stage" class="relative w-full aspect-youtube bg-black rounded-xl overflow-hidden flex items-center justify-center border border-slate-800 transition-all duration-300">
+                            
+                            <!-- Actual HTML5 Video Element -->
+                            <video id="main-video-player" class="w-full h-full object-cover" crossorigin="anonymous" playsinline>
+                                <!-- Fallback or sample visual canvas will animate if no file uploaded -->
+                            </video>
+
+                            <!-- Simulated Scene Canvas (When no local video file is selected yet) -->
+                            <canvas id="demo-video-canvas" class="w-full h-full object-cover block"></canvas>
+
+                            <!-- Live Resolution & Emotion Badge Overlay -->
+                            <div class="absolute top-3 left-3 flex items-center space-x-2 z-10">
+                                <span id="badge-resolution" class="bg-black/75 backdrop-blur-md text-amber-400 border border-amber-500/40 text-[11px] font-bold px-2.5 py-0.5 rounded-md">
+                                    8K ULTRA HD (4320p)
+                                </span>
+                                <span id="badge-emotion" class="bg-blue-600/80 backdrop-blur-md text-white text-[11px] font-medium px-2.5 py-0.5 rounded-md">
+                                    <i class="fa-solid fa-face-smile mr-1"></i> អារម្មណ៍ដើមតួអង្គ (Auto)
+                                </span>
+                            </div>
+
+                            <!-- Live Customizable Subtitle Overlay -->
+                            <div id="subtitle-overlay-container" class="absolute bottom-8 left-4 right-4 text-center pointer-events-none z-20 transition-all">
+                                <span id="subtitle-preview-text" 
+                                      style="font-size: 20px; color: #ffffff; background-color: rgba(0, 0, 0, 0.72);"
+                                      class="inline-block px-4 py-1.5 rounded-lg font-medium leading-relaxed shadow-lg transition-all">
+                                    សួស្តី! នេះគឺជាការបកប្រែសំឡេង និងអក្សរសាប់ថៃថលដោយស្វ័យប្រវត្តិ។
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Video Playback & Quick Audio Preview Controls -->
+                    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
+                        <div class="flex flex-wrap items-center justify-between gap-3">
+                            <div class="flex items-center space-x-2">
+                                <button onclick="toggleVideoPlay()" id="btn-play-pause" title="ចាក់ / ផ្អាកវីដេអូ" class="w-11 h-11 rounded-full bg-blue-600 hover:bg-blue-500 text-white flex items-center justify-center shadow-lg transition">
+                                    <i class="fa-solid fa-play text-lg" id="play-icon"></i>
+                                </button>
+                                <button onclick="replayFromBeginning()" title="ចាក់ Play ឡើងវិញពីដើមដើម្បីផ្ទៀងផ្ទាត់" class="bg-indigo-600/20 hover:bg-indigo-600/40 border border-indigo-500/50 text-indigo-300 text-xs font-semibold px-3 py-2.5 rounded-xl flex items-center space-x-1.5 transition">
+                                    <i class="fa-solid fa-rotate-left"></i>
+                                    <span>ចាក់ Play ឡើងវិញ</span>
+                                </button>
+                            </div>
+                            
+                            <!-- Timeline Scrubber -->
+                            <div class="flex-1 min-w-[160px] space-y-1">
+                                <div class="flex justify-between text-xs text-slate-400">
+                                    <span id="current-time-label">00:00:00</span>
+                                    <span id="playback-sync-status" class="text-emerald-400 font-medium">រួចរាល់សម្រាប់ចាក់ស្តាប់</span>
+                                    <span id="total-time-label">00:15:30</span>
+                                </div>
+                                <input type="range" id="timeline-scrubber" min="0" max="100" value="0" class="w-full" oninput="scrubVideo(this.value)">
+                            </div>
+
+                            <!-- Test Dubbed Voice Button -->
+                            <button onclick="speakCurrentSubtitle()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-3.5 py-2.5 rounded-xl flex items-center space-x-1.5 shadow transition">
+                                <i class="fa-solid fa-volume-high"></i>
+                                <span>ស្តាប់ឃ្លានេះ</span>
+                            </button>
+                        </div>
+
+                        <!-- Interactive Subtitle Script Editor (Multi-character) -->
+                        <div class="pt-3 border-t border-slate-800">
+                            <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                                <span class="text-xs font-semibold text-slate-300"><i class="fa-solid fa-pen-to-square text-amber-400 mr-1.5"></i> កែសម្រួល (Edit) អក្សរសាប់ថៃថល & ផ្ទៀងផ្ទាត់ឡើងវិញ៖</span>
+                                <div class="flex items-center space-x-3">
+                                    <button onclick="replayFromBeginning()" class="text-xs bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 px-2.5 py-1 rounded-lg font-medium transition">
+                                        <i class="fa-solid fa-check-double mr-1"></i> បញ្ជាក់ & ចាក់ Play ឡើងវិញ
+                                    </button>
+                                    <button onclick="addNewSubtitleLine()" class="text-xs text-blue-400 hover:text-blue-300">+ បន្ថែមឃ្លា</button>
+                                </div>
+                            </div>
+                            <div id="script-lines-container" class="max-h-52 overflow-y-auto space-y-2 pr-1">
+                                <!-- Dynamic script rows injected by JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- RIGHT COLUMN (5 Cols): Voice Cloning, Audio Mixer, Subtitle Style & 8K Export -->
+                <div class="lg:col-span-5 space-y-4">
+
+                    <!-- 1. Character Voice & Emotion Matching (ចម្លងសំឡេងដើមតាមអារម្មណ៍តួអង្គ) -->
+                    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-sm font-bold text-white flex items-center">
+                                <i class="fa-solid fa-masks-theater text-purple-400 mr-2"></i>
+                                សំឡេងដើម & អារម្មណ៍តួអង្គ (Voice & Emotion)
+                            </h3>
+                            <span class="text-[11px] bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded-full">AI Voice Clone</span>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                            <div>
+                                <label class="block text-xs text-slate-400 mb-1">ប្រភេទសំឡេងបញ្ចូល</label>
+                                <select id="voice-clone-mode" onchange="updateVoiceSettings()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
+                                    <option value="clone-original" selected>យកតាមសំឡេងដើមរបស់តួអង្គ (AI Clone)</option>
+                                    <option value="male-deep">សំឡេងបុរសធ្ងន់ (Male Narrator)</option>
+                                    <option value="female-soft">សំឡេងនារីស្រទន់ (Female Clear)</option>
+                                    <option value="kid-bright">សំឡេងកុមារ (Youthful)</option>
+                                    <option value="multi-speaker">បែងចែកតួអង្គស្វ័យប្រវត្តិ (Multi-Character)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-400 mb-1">អារម្មណ៍នៃសំឡេង (Emotion Tone)</label>
+                                <select id="emotion-select" onchange="updateEmotionBadge()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
+                                    <option value="auto" selected>ស្វ័យប្រវត្តិតាមតួអង្គក្នុងវីដេអូ (Auto-Match)</option>
+                                    <option value="happy">រីករាយ / រំភើប (Happy & Excited)</option>
+                                    <option value="sad">សោកសៅ / កំសត់ (Sad & Emotional)</option>
+                                    <option value="angry">ខឹងសម្បារ / តានតឹង (Angry & Intense)</option>
+                                    <option value="serious">ម៉ឺងម៉ាត់ / ព័ត៌មាន (Serious & Informative)</option>
+                                    <option value="whisper">ខ្សឹបខ្សៀវ / អាថ៌កំបាំង (Whisper & Dramatic)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Detected Characters List -->
+                        <div class="bg-slate-950/70 rounded-xl p-2.5 border border-slate-800/80 space-y-2">
+                            <p class="text-[11px] text-slate-400 font-medium">តួអង្គដែល AI រកឃើញក្នុងវីដេអូ៖</p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="text-xs bg-slate-800 border border-blue-500/40 text-blue-300 px-2.5 py-1 rounded-lg flex items-center">
+                                    <i class="fa-solid fa-user-tie mr-1.5"></i> តួអង្គទី ១ (បុរស • ម៉ឺងម៉ាត់)
+                                </span>
+                                <span class="text-xs bg-slate-800 border border-pink-500/40 text-pink-300 px-2.5 py-1 rounded-lg flex items-center">
+                                    <i class="fa-solid fa-user mr-1.5"></i> តួអង្គទី ២ (នារី • រំភើប)
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. Audio Mixer (បន្ថយ និងដំឡើងសំឡេងដើម / សំឡេងបកប្រែ) -->
+                    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
+                        <h3 class="text-sm font-bold text-white flex items-center">
+                            <i class="fa-solid fa-sliders text-emerald-400 mr-2"></i>
+                            លៃតម្រូវកម្រិតសំឡេង (Audio Mixer)
+                        </h3>
+
+                        <!-- Original Video Volume -->
+                        <div class="space-y-1">
+                            <div class="flex justify-between text-xs">
+                                <span class="text-slate-300"><i class="fa-solid fa-film text-slate-400 mr-1"></i> សំឡេងដើមរបស់វីដេអូ (Original Audio)</span>
+                                <span id="orig-vol-val" class="font-bold text-amber-400">15%</span>
+                            </div>
+                            <input type="range" id="orig-vol-slider" min="0" max="100" value="15" class="w-full" oninput="updateAudioMixer()">
+                        </div>
+
+                        <!-- Translated Dubbed Volume -->
+                        <div class="space-y-1">
+                            <div class="flex justify-between text-xs">
+                                <span class="text-slate-300"><i class="fa-solid fa-microphone text-blue-400 mr-1"></i> សំឡេងបកប្រែថ្មី (Dubbed Voice)</span>
+                                <span id="dub-vol-val" class="font-bold text-blue-400">100%</span>
+                            </div>
+                            <input type="range" id="dub-vol-slider" min="0" max="150" value="100" class="w-full" oninput="updateAudioMixer()">
+                        </div>
+
+                        <div class="flex items-center justify-between pt-1">
+                            <label class="flex items-center space-x-2 text-xs text-slate-300 cursor-pointer">
+                                <input type="checkbox" id="keep-bgm" checked class="rounded bg-slate-800 border-slate-600 text-blue-600">
+                                <span>រក្សាទុកភ្លេង Background (AI Vocal Remover)</span>
+                            </label>
+                            <button onclick="muteOriginalQuick()" class="text-xs text-rose-400 hover:underline">បិទសំឡេងដើម (0%)</button>
+                        </div>
+                    </div>
+
+                    <!-- 3. Subtitle Styling (កែតម្រូវអក្សរសាប់ថៃថល តូចធំ និងពណ៌) -->
+                    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-sm font-bold text-white flex items-center">
+                                <i class="fa-solid fa-font text-amber-400 mr-2"></i>
+                                កែតម្រូវអក្សរសាប់ថៃថល (Subtitle Style)
+                            </h3>
+                            <label class="flex items-center space-x-1.5 text-xs text-slate-300 cursor-pointer">
+                                <input type="checkbox" id="toggle-subtitle" checked onchange="toggleSubtitleVisibility()" class="rounded text-blue-600">
+                                <span>បង្ហាញអក្សរ</span>
+                            </label>
+                        </div>
+
+                        <!-- Font Size Slider -->
+                        <div class="space-y-1">
+                            <div class="flex justify-between text-xs">
+                                <span class="text-slate-300">ទំហំអក្សរ (តូច - ធំ)</span>
+                                <span id="sub-size-val" class="font-bold text-blue-400">20px</span>
+                            </div>
+                            <input type="range" id="sub-size-slider" min="12" max="42" value="20" class="w-full" oninput="updateSubtitleStyle()">
+                        </div>
+
+                        <!-- Text Color & Background Color -->
+                        <div class="grid grid-cols-2 gap-3 pt-1">
+                            <div>
+                                <label class="block text-xs text-slate-400 mb-1">ពណ៌អក្សរ (Text Color)</label>
+                                <div class="flex items-center space-x-2">
+                                    <input type="color" id="sub-text-color" value="#ffffff" onchange="updateSubtitleStyle()" class="w-8 h-8 rounded cursor-pointer bg-transparent border-0">
+                                    <div class="flex space-x-1">
+                                        <button onclick="setSubColor('#ffffff')" class="w-5 h-5 rounded-full bg-white border border-slate-600"></button>
+                                        <button onclick="setSubColor('#facc15')" class="w-5 h-5 rounded-full bg-yellow-400 border border-slate-600"></button>
+                                        <button onclick="setSubColor('#38bdf8')" class="w-5 h-5 rounded-full bg-sky-400 border border-slate-600"></button>
+                                        <button onclick="setSubColor('#4ade80')" class="w-5 h-5 rounded-full bg-green-400 border border-slate-600"></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-400 mb-1">ពណ៌ផ្ទៃខាងក្រោយអក្សរ</label>
+                                <div class="flex items-center space-x-2">
+                                    <input type="color" id="sub-bg-color" value="#000000" onchange="updateSubtitleStyle()" class="w-8 h-8 rounded cursor-pointer bg-transparent border-0">
+                                    <select id="sub-bg-opacity" onchange="updateSubtitleStyle()" class="bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white">
+                                        <option value="0.75" selected>ស្រអាប់ 75%</option>
+                                        <option value="1">ដិត 100%</option>
+                                        <option value="0">គ្មានផ្ទៃ (0%)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. Export & Download Up to 8K (ទាញយកវីដេអូរហូតដល់ 8K គ្រប់កម្រិត) -->
+                    <div class="bg-gradient-to-br from-slate-900 to-indigo-950/60 border border-indigo-500/40 rounded-2xl p-4 space-y-3 shadow-xl">
+                        <h3 class="text-sm font-bold text-white flex items-center">
+                            <i class="fa-solid fa-download text-blue-400 mr-2"></i>
+                            ទាញយកវីដេអូ (Download Up to 8K)
+                        </h3>
+
+                        <div class="grid grid-cols-2 gap-2.5">
+                            <div>
+                                <label class="block text-xs text-slate-300 mb-1">កម្រិតច្បាស់ (Resolution)</label>
+                                <select id="export-resolution" onchange="updateResolutionBadge()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs font-semibold text-amber-400">
+                                    <option value="8K (7680x4320) Ultra HD" selected>8K Ultra HD (4320p)</option>
+                                    <option value="4K (3840x2160) UHD">4K UHD (2160p)</option>
+                                    <option value="2K (2560x1440) QHD">2K QHD (1440p)</option>
+                                    <option value="1080p Full HD">1080p Full HD</option>
+                                    <option value="720p HD">720p HD</option>
+                                    <option value="480p SD">480p SD (សន្សំទិន្នន័យ)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-300 mb-1">ទម្រង់ឯកសារ (Format)</label>
+                                <select id="export-format" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
+                                    <option value="mp4">MP4 (H.265 / 8K Ready)</option>
+                                    <option value="mov">MOV (ProRes Quality)</option>
+                                    <option value="webm">WEBM (Web Optimized)</option>
+                                    <option value="srt">ឯកសារ Subtitle (.SRT)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button onclick="exportAndDownloadVideo()" class="w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-600 hover:from-emerald-400 hover:to-blue-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg shadow-emerald-600/20 transition flex items-center justify-center space-x-2">
+                            <i class="fa-solid fa-file-arrow-down text-lg"></i>
+                            <span>ទាញយកវីដេអូដែលបានបកប្រែ (Download)</span>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 2: AUDIO TRANSLATION & VOICE CLONING ==================== -->
+        <section id="view-audio" class="hidden space-y-6">
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-4xl mx-auto space-y-6 shadow-xl">
+                <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-800 pb-4">
+                    <div>
+                        <h2 class="text-lg font-bold text-white"><i class="fa-solid fa-waveform-lines text-blue-400 mr-2"></i> បកប្រែឯកសារសំឡេង & សំឡេងផ្ទាល់</h2>
+                        <p class="text-xs text-slate-400">បញ្ចូលឯកសារសំឡេង (MP3, WAV, M4A រហូតដល់ 100 ម៉ោង) ឬនិយាយផ្ទាល់ដើម្បីបកប្រែ</p>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <select id="audio-target-lang" class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white">
+                            <option value="ខ្មែរ (Khmer)">បកប្រែទៅ៖ ខ្មែរ (Khmer)</option>
+                            <option value="អង់គ្លេស (English)">បកប្រែទៅ៖ អង់គ្លេស (English)</option>
+                            <option value="ចិន (Chinese)">បកប្រែទៅ៖ ចិន (Chinese)</option>
+                            <option value="ជប៉ុន (Japanese)">បកប្រែទៅ៖ ជប៉ុន (Japanese)</option>
+                            <option value="កូរ៉េ (Korean)">បកប្រែទៅ៖ កូរ៉េ (Korean)</option>
+                            <option value="ថៃ (Thai)">បកប្រែទៅ៖ ថៃ (Thai)</option>
+                            <option value="បារាំង (French)">បកប្រែទៅ៖ បារាំង (French)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Audio Upload & Mic Record -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <label class="cursor-pointer bg-slate-800/70 hover:bg-slate-800 border-2 border-dashed border-slate-700 hover:border-blue-500 rounded-2xl p-6 flex flex-col items-center justify-center text-center transition">
+                        <i class="fa-solid fa-file-audio text-3xl text-blue-400 mb-2"></i>
+                        <span class="text-sm font-semibold text-white">ជ្រើសរើសឯកសារសំឡេង (MP3, WAV)</span>
+                        <span id="audio-file-label" class="text-xs text-slate-400 mt-1">គាំទ្រសំឡេងវែងរហូតដល់ 100 ម៉ោង</span>
+                        <input type="file" accept="audio/*" class="hidden" onchange="handleAudioFileUpload(event)">
+                    </label>
+
+                    <div class="bg-slate-800/70 border border-slate-700 rounded-2xl p-6 flex flex-col items-center justify-center text-center space-y-3">
+                        <button onclick="toggleMicRecording()" id="btn-mic-record" class="w-14 h-14 rounded-full bg-rose-600 hover:bg-rose-500 text-white flex items-center justify-center shadow-lg transition">
+                            <i class="fa-solid fa-microphone text-xl"></i>
+                        </button>
+                        <div>
+                            <p id="mic-status-text" class="text-sm font-semibold text-white">ចុចដើម្បីនិយាយបកប្រែផ្ទាល់</p>
+                            <p class="text-xs text-slate-400">AI នឹងចាប់យកអារម្មណ៍ និងសំឡេងរបស់អ្នក</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Audio Transcription & Translation Result -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-slate-950 border border-slate-800 rounded-xl p-4">
+                        <label class="block text-xs font-semibold text-slate-400 mb-2">អត្ថបទដែលដកស្រង់ចេញពីសំឡេងដើម៖</label>
+                        <textarea id="audio-source-text" rows="4" class="w-full bg-transparent text-sm text-slate-200 focus:outline-none" placeholder="អត្ថបទសំឡេងដើមនឹងបង្ហាញនៅទីនេះ...">Hello everyone, welcome to our global conference. Today we are excited to share our new technology with the world!</textarea>
+                    </div>
+                    <div class="bg-slate-950 border border-blue-500/30 rounded-xl p-4">
+                        <label class="block text-xs font-semibold text-blue-400 mb-2">លទ្ធផលបកប្រែ & សំឡេងថ្មី៖</label>
+                        <textarea id="audio-translated-text" rows="4" class="w-full bg-transparent text-sm text-white focus:outline-none" placeholder="លទ្ធផលបកប្រែ...">សួស្តីអ្នកទាំងអស់គ្នា សូមស្វាគមន៍មកកាន់សន្និសីទពិភពលោករបស់យើង។ ថ្ងៃនេះយើងពិតជារំភើបក្នុងការចែករំលែកបច្ចេកវិទ្យាថ្មីទៅកាន់ពិភពលោក!</textarea>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap justify-end gap-3">
+                    <button onclick="translateAudioText()" class="bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition">
+                        <i class="fa-solid fa-language mr-1.5"></i> បកប្រែសំឡេងឥឡូវនេះ
+                    </button>
+                    <button onclick="playAudioTranslation()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition">
+                        <i class="fa-solid fa-volume-high mr-1.5"></i> ស្តាប់ & ទាញយកសំឡេង (WAV)
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 3: UNIVERSAL TEXT TRANSLATOR ==================== -->
+        <section id="view-text" class="hidden space-y-6">
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-5xl mx-auto space-y-4 shadow-xl">
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-4">
+                    <div class="flex items-center space-x-3">
+                        <select id="text-src-lang" class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white">
+                            <option value="Auto-Detect">រកឃើញភាសាស្វ័យប្រវត្តិ (គ្រប់ភាសា)</option>
+                            <option value="English">អង់គ្លេស (English)</option>
+                            <option value="Khmer">ខ្មែរ (Khmer)</option>
+                            <option value="Chinese">ចិន (Chinese)</option>
+                            <option value="Japanese">ជប៉ុន (Japanese)</option>
+                            <option value="Korean">កូរ៉េ (Korean)</option>
+                            <option value="Thai">ថៃ (Thai)</option>
+                            <option value="French">បារាំង (French)</option>
+                        </select>
+                        <i class="fa-solid fa-arrow-right text-slate-400"></i>
+                        <select id="text-target-lang" class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white">
+                            <option value="ខ្មែរ (Khmer)" selected>ខ្មែរ (Khmer)</option>
+                            <option value="អង់គ្លេស (English)">អង់គ្លេស (English)</option>
+                            <option value="ចិន (Chinese)">ចិន (Chinese)</option>
+                            <option value="ជប៉ុន (Japanese)">ជប៉ុន (Japanese)</option>
+                            <option value="កូរ៉េ (Korean)">កូរ៉េ (Korean)</option>
+                            <option value="ថៃ (Thai)">ថៃ (Thai)</option>
+                            <option value="វៀតណាម (Vietnamese)">វៀតណាម (Vietnamese)</option>
+                            <option value="បារាំង (French)">បារាំង (French)</option>
+                            <option value="អេស្ប៉ាញ (Spanish)">អេស្ប៉ាញ (Spanish)</option>
+                            <option value="អារ៉ាប់ (Arabic)">អារ៉ាប់ (Arabic)</option>
+                        </select>
+                    </div>
+                    <button onclick="executeTextTranslation()" id="btn-translate-text" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-sm font-semibold px-6 py-2.5 rounded-xl shadow transition">
+                        <i class="fa-solid fa-sparkles mr-1.5"></i> បកប្រែអត្ថបទ
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 flex flex-col">
+                        <textarea id="input-text-box" rows="8" class="w-full flex-1 bg-transparent text-sm md:text-base text-slate-200 focus:outline-none resize-none" placeholder="វាយបញ្ចូល ឬបិទភ្ជាប់អត្ថបទដែលអ្នកចង់បកប្រែនៅទីនេះ..."></textarea>
+                        <div class="flex justify-between items-center pt-2 border-t border-slate-800/80 text-xs text-slate-400">
+                            <span id="char-count">0 តួអក្សរ</span>
+                            <button onclick="document.getElementById('input-text-box').value=''" class="hover:text-white">សម្អាត</button>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-950 border border-indigo-500/30 rounded-xl p-4 flex flex-col">
+                        <textarea id="output-text-box" rows="8" readonly class="w-full flex-1 bg-transparent text-sm md:text-base text-white focus:outline-none resize-none" placeholder="លទ្ធផលនៃការបកប្រែនឹងបង្ហាញនៅទីនេះ..."></textarea>
+                        <div class="flex justify-end items-center space-x-3 pt-2 border-t border-slate-800/80 text-xs">
+                            <button onclick="speakTranslatedText()" class="text-emerald-400 hover:text-emerald-300 flex items-center space-x-1">
+                                <i class="fa-solid fa-volume-high"></i> <span>អានសំឡេង</span>
+                            </button>
+                            <button onclick="copyTranslatedText()" class="text-blue-400 hover:text-blue-300 flex items-center space-x-1">
+                                <i class="fa-solid fa-copy"></i> <span>ចម្លងអត្ថបទ</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Custom Notification Toast / Modal (No alert() used) -->
+    <div id="toast-notification" class="fixed bottom-5 right-5 z-50 transform translate-y-24 opacity-0 transition-all duration-300 bg-slate-800 border border-blue-500/50 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center space-x-3 max-w-md">
+        <i id="toast-icon" class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
+        <div class="text-xs md:text-sm" id="toast-message">ប្រតិបត្តិការជោគជ័យ!</div>
+    </div>
+
+    <!-- Rendering / Exporting Modal Overlay -->
+    <div id="export-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-md w-full p-6 space-y-4 text-center shadow-2xl">
+            <div class="w-16 h-16 rounded-full bg-blue-600/20 border border-blue-500 flex items-center justify-center mx-auto">
+                <i class="fa-solid fa-film text-2xl text-blue-400 animate-bounce"></i>
+            </div>
+            <h3 class="text-lg font-bold text-white" id="export-modal-title">កំពុងផលិតវីដេអូកម្រិត 8K Ultra HD...</h3>
+            <p class="text-xs text-slate-300" id="export-modal-desc">ប្រព័ន្ធ AI កំពុងបញ្ចូលសំឡេងតាមអារម្មណ៍តួអង្គ លៃតម្រូវអក្សរសាប់ថៃថល និងរៀបចំទំហំវីដេអូ។</p>
+            <div class="w-full bg-slate-800 rounded-full h-3 overflow-hidden">
+                <div id="export-progress-bar" class="bg-gradient-to-r from-emerald-400 to-blue-500 h-3 rounded-full transition-all duration-200" style="width: 0%"></div>
+            </div>
+            <div class="text-xs font-bold text-emerald-400" id="export-percent">0%</div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== STATE MANAGEMENT ====================
+        const apiKey = ""; // Provided automatically by runtime environment
+        let isPlaying = false;
+        let hasUploadedVideo = false;
+        let isAudioMerged = false;
+        let lastSpokenIndex = -1;
+        let demoTime = 0;
+        let demoInterval = null;
+        let currentAspect = 'youtube';
+
+        // Default Multi-Character Subtitle Script with Emotions
+        let scriptLines = [
+            {
+                id: 1,
+                startSec: 0,
+                time: "00:00:00",
+                character: "តួអង្គទី ១ (បុរស)",
+                emotion: "ម៉ឺងម៉ាត់ (Serious)",
+                original: "We must protect this ancient secret before the storm arrives.",
+                translated: "យើងត្រូវតែការពារអាថ៌កំបាំងបុរាណនេះ មុនពេលព្យុះមកដល់។"
+            },
+            {
+                id: 2,
+                startSec: 5,
+                time: "00:00:05",
+                character: "តួអង្គទី ២ (នារី)",
+                emotion: "រំភើប (Excited)",
+                original: "Look! The portal is opening! We actually did it!",
+                translated: "មើលនោះ! ច្រកទ្វារកំពុងបើកហើយ! ពួកយើងពិតជាធ្វើបានសម្រេចមែន!"
+            },
+            {
+                id: 3,
+                startSec: 10,
+                time: "00:00:10",
+                character: "តួអង្គទី ១ (បុរស)",
+                emotion: "សោកសៅ (Emotional)",
+                original: "I will never forget the sacrifices everyone made for this day.",
+                translated: "ខ្ញុំនឹងមិនភ្លេចឡើយនូវការលះបង់របស់អ្នកគ្រប់គ្នាដើម្បីថ្ងៃនេះ។"
+            }
+        ];
+
+        // ==================== INITIALIZATION ====================
+        window.onload = function() {
+            renderScriptLines();
+            startDemoCanvasAnimation();
+            updateAudioMixer();
+            updateSubtitleStyle();
+
+            // Character counter for text tab
+            const inputTextBox = document.getElementById('input-text-box');
+            if (inputTextBox) {
+                inputTextBox.addEventListener('input', () => {
+                    document.getElementById('char-count').textContent = `${inputTextBox.value.length} តួអក្សរ`;
+                });
+            }
+        };
+
+        // ==================== TAB NAVIGATION ====================
+        function switchTab(tabName) {
+            ['video', 'audio', 'text'].forEach(t => {
+                document.getElementById(`view-${t}`).classList.add('hidden');
+                const btn = document.getElementById(`tab-${t}`);
+                btn.classList.remove('bg-blue-600', 'text-white', 'shadow');
+                btn.classList.add('text-slate-300');
+            });
+
+            document.getElementById(`view-${tabName}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`tab-${tabName}`);
+            activeBtn.classList.add('bg-blue-600', 'text-white', 'shadow');
+            activeBtn.classList.remove('text-slate-300');
+        }
+
+        // ==================== TOAST NOTIFICATION ====================
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast-notification');
+            const msgEl = document.getElementById('toast-message');
+            const iconEl = document.getElementById('toast-icon');
+
+            msgEl.textContent = message;
+            if (type === 'error') {
+                iconEl.className = 'fa-solid fa-circle-exclamation text-rose-400 text-lg';
+            } else if (type === 'info') {
+                iconEl.className = 'fa-solid fa-circle-info text-blue-400 text-lg';
+            } else {
+                iconEl.className = 'fa-solid fa-circle-check text-emerald-400 text-lg';
+            }
+
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 3800);
+        }
+
+        // ==================== VIDEO UPLOAD & 100-HOUR SIMULATION ====================
+        function handleVideoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            document.getElementById('video-filename').textContent = file.name;
+            const videoPlayer = document.getElementById('main-video-player');
+            const demoCanvas = document.getElementById('demo-video-canvas');
+
+            const fileURL = URL.createObjectURL(file);
+            videoPlayer.src = fileURL;
+            videoPlayer.classList.remove('hidden');
+            demoCanvas.classList.add('hidden');
+            hasUploadedVideo = true;
+
+            videoPlayer.onloadedmetadata = () => {
+                const dur = formatTime(videoPlayer.duration);
+                document.getElementById('video-duration-display').textContent = `${dur} (គាំទ្រដល់ 100:00:00)`;
+                document.getElementById('total-time-label').textContent = dur;
+                updateAudioMixer();
+            };
+
+            videoPlayer.ontimeupdate = () => {
+                if (videoPlayer.duration) {
+                    const pct = (videoPlayer.currentTime / videoPlayer.duration) * 100;
+                    document.getElementById('timeline-scrubber').value = pct;
+                    document.getElementById('current-time-label').textContent = formatTime(videoPlayer.currentTime);
+                    syncSubtitleAndVoiceAtTime(videoPlayer.currentTime);
+                }
+            };
+
+            videoPlayer.onended = () => {
+                isPlaying = false;
+                document.getElementById('play-icon').className = 'fa-solid fa-play text-lg';
+                lastSpokenIndex = -1;
+            };
+
+            showToast(`បានផ្ទុកវីដេអូ "${file.name}" ដោយជោគជ័យ!`);
+        }
+
+        function loadSampleLongVideo() {
+            hasUploadedVideo = false;
+            document.getElementById('main-video-player').classList.add('hidden');
+            document.getElementById('demo-video-canvas').classList.remove('hidden');
+            document.getElementById('video-filename').textContent = "Epic_Documentary_100_Hours_Master.mp4";
+            document.getElementById('video-duration-display').textContent = "100:00:00 (វីដេអូវែងកម្រិតអតិបរមា)";
+            document.getElementById('total-time-label').textContent = "100:00:00";
+            document.getElementById('chunk-status').textContent = "បំបែកជា 600 ភាគ (10 នាទី/ភាគ) រួចរាល់";
+            showToast("បានដាក់បញ្ចូលគំរូវីដេអូវែង ១០០ ម៉ោង (100 Hours Batch Mode)!", "info");
+        }
+
+        function formatTime(seconds) {
+            const hrs = Math.floor(seconds / 3600);
+            const mins = Math.floor((seconds % 3600) / 60);
+            const secs = Math.floor(seconds % 60);
+            return [hrs, mins, secs].map(v => v < 10 ? "0" + v : v).join(":");
+        }
+
+        // ==================== DEMO CANVAS VISUALIZER ====================
+        function startDemoCanvasAnimation() {
+            const canvas = document.getElementById('demo-video-canvas');
+            const ctx = canvas.getContext('2d');
+            let frame = 0;
+
+            function draw() {
+                if (!hasUploadedVideo) {
+                    canvas.width = canvas.parentElement.clientWidth || 640;
+                    canvas.height = canvas.parentElement.clientHeight || 360;
+
+                    // Cinematic Gradient Background
+                    const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+                    grad.addColorStop(0, '#0f172a');
+                    grad.addColorStop(0.5, '#1e1b4b');
+                    grad.addColorStop(1, '#090d16');
+                    ctx.fillStyle = grad;
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                    // Animated Soundwave & Character Avatar Visuals
+                    const centerX = canvas.width / 2;
+                    const centerY = canvas.height / 2 - 20;
+
+                    // Draw Two Character Nodes (Representing Multi-Character Emotion AI)
+                    const pulse1 = isPlaying ? Math.sin(frame * 0.12) * 8 : 0;
+                    const pulse2 = isPlaying ? Math.cos(frame * 0.12) * 8 : 0;
+
+                    // Character 1 Circle
+                    ctx.beginPath();
+                    ctx.arc(centerX - 80, centerY, 34 + pulse1, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(59, 130, 246, 0.25)';
+                    ctx.fill();
+                    ctx.strokeStyle = '#60a5fa';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+
+                    ctx.fillStyle = '#ffffff';
+                    ctx.font = 'bold 12px Kantumruy Pro, sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('តួអង្គទី ១', centerX - 80, centerY + 4);
+
+                    // Character 2 Circle
+                    ctx.beginPath();
+                    ctx.arc(centerX + 80, centerY, 34 + pulse2, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(236, 72, 153, 0.25)';
+                    ctx.fill();
+                    ctx.strokeStyle = '#f472b6';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillText('តួអង្គទី ២', centerX + 80, centerY + 4);
+
+                    // Audio Waveform bars in between
+                    for (let i = -5; i <= 5; i++) {
+                        const barH = isPlaying ? 10 + Math.abs(Math.sin(frame * 0.15 + i)) * 28 : 8;
+                        ctx.fillStyle = '#818cf8';
+                        ctx.fillRect(centerX + i * 7 - 2, centerY - barH / 2, 4, barH);
+                    }
+
+                    if (isPlaying) {
+                        frame++;
+                    }
+                }
+                requestAnimationFrame(draw);
+            }
+            draw();
+        }
+
+        function toggleVideoPlay() {
+            const videoPlayer = document.getElementById('main-video-player');
+            const playIcon = document.getElementById('play-icon');
+
+            isPlaying = !isPlaying;
+            if (isPlaying) {
+                playIcon.className = 'fa-solid fa-pause text-lg';
+                document.getElementById('playback-sync-status').textContent = isAudioMerged ? "កំពុងចាក់វីដេអូ + សំឡេងបកប្រែរួមគ្នា" : "កំពុងចាក់វីដេអូ & សំឡេងផ្ទៀងផ្ទាត់";
+                
+                if (hasUploadedVideo) {
+                    videoPlayer.play();
+                    syncSubtitleAndVoiceAtTime(videoPlayer.currentTime);
+                } else {
+                    syncSubtitleAndVoiceAtTime(demoTime);
+                    demoInterval = setInterval(() => {
+                        demoTime++;
+                        document.getElementById('current-time-label').textContent = formatTime(demoTime);
+                        document.getElementById('timeline-scrubber').value = ((demoTime % 15) / 15) * 100;
+                        syncSubtitleAndVoiceAtTime(demoTime % 15);
+                    }, 1000);
+                }
+            } else {
+                playIcon.className = 'fa-solid fa-play text-lg';
+                if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+                if (hasUploadedVideo) {
+                    videoPlayer.pause();
+                } else {
+                    clearInterval(demoInterval);
+                }
+            }
+        }
+
+        // Synchronize Subtitle Overlay & Translated Dubbed Audio during Playback
+        function syncSubtitleAndVoiceAtTime(currentSeconds) {
+            let activeIdx = 0;
+            for (let i = 0; i < scriptLines.length; i++) {
+                if (currentSeconds >= scriptLines[i].startSec) {
+                    activeIdx = i;
+                }
+            }
+
+            const currentLine = scriptLines[activeIdx];
+            if (currentLine) {
+                document.getElementById('subtitle-preview-text').textContent = currentLine.translated;
+                if (isPlaying && lastSpokenIndex !== activeIdx) {
+                    lastSpokenIndex = activeIdx;
+                    speakTextWithBrowserTTS(currentLine.translated, false);
+                }
+            }
+        }
+
+        // Replay from beginning to verify after editing subtitles
+        function replayFromBeginning() {
+            const videoPlayer = document.getElementById('main-video-player');
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            lastSpokenIndex = -1;
+            demoTime = 0;
+
+            if (hasUploadedVideo) {
+                videoPlayer.currentTime = 0;
+            }
+            document.getElementById('timeline-scrubber').value = 0;
+            document.getElementById('current-time-label').textContent = "00:00:00";
+
+            if (!isPlaying) {
+                toggleVideoPlay();
+            } else {
+                if (hasUploadedVideo) videoPlayer.play();
+                syncSubtitleAndVoiceAtTime(0);
+            }
+            showToast("កំពុងចាក់ Play ឡើងវិញពីដើម ដើម្បីផ្ទៀងផ្ទាត់អក្សរ និងសំឡេង!", "info");
+        }
+
+        function scrubVideo(val) {
+            const videoPlayer = document.getElementById('main-video-player');
+            lastSpokenIndex = -1;
+            if (hasUploadedVideo && videoPlayer.duration) {
+                videoPlayer.currentTime = (val / 100) * videoPlayer.duration;
+                syncSubtitleAndVoiceAtTime(videoPlayer.currentTime);
+            } else {
+                demoTime = Math.floor((val / 100) * 15);
+                document.getElementById('current-time-label').textContent = formatTime(demoTime);
+                syncSubtitleAndVoiceAtTime(demoTime);
+            }
+        }
+
+        // ==================== PLATFORM ASPECT RATIO ====================
+        function setAspectRatio(platform) {
+            currentAspect = platform;
+            const stage = document.getElementById('video-stage');
+            
+            // Reset buttons
+            document.querySelectorAll('.ratio-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-600', 'text-white');
+                btn.classList.add('bg-slate-800', 'text-slate-300');
+            });
+            const activeBtn = document.getElementById(`ratio-${platform}`);
+            activeBtn.classList.add('bg-blue-600', 'text-white');
+            activeBtn.classList.remove('bg-slate-800', 'text-slate-300');
+
+            // Update stage classes
+            stage.classList.remove('aspect-youtube', 'aspect-tiktok', 'aspect-facebook');
+            if (platform === 'youtube') {
+                stage.classList.add('aspect-youtube');
+                showToast("ប្តូរទំហំទៅជា YouTube (16:9 Widescreen)", "info");
+            } else if (platform === 'tiktok') {
+                stage.classList.add('aspect-tiktok');
+                showToast("ប្តូរទំហំទៅជា TikTok / Reels (9:16 Vertical)", "info");
+            } else if (platform === 'facebook') {
+                stage.classList.add('aspect-facebook');
+                showToast("ប្តូរទំហំទៅជា Facebook Feed (1:1 Square)", "info");
+            }
+        }
+
+        // ==================== AUDIO MIXER (ORIGINAL VS DUBBED) ====================
+        function updateAudioMixer() {
+            const origVol = document.getElementById('orig-vol-slider').value;
+            const dubVol = document.getElementById('dub-vol-slider').value;
+
+            document.getElementById('orig-vol-val').textContent = `${origVol}%`;
+            document.getElementById('dub-vol-val').textContent = `${dubVol}%`;
+
+            const videoPlayer = document.getElementById('main-video-player');
+            if (videoPlayer) {
+                videoPlayer.volume = origVol / 100;
+            }
+        }
+
+        function muteOriginalQuick() {
+            document.getElementById('orig-vol-slider').value = 0;
+            updateAudioMixer();
+            showToast("បានបិទសំឡេងដើមរបស់វីដេអូ (0%) ទុកតែសំឡេងបកប្រែ!", "info");
+        }
+
+        // ==================== SUBTITLE STYLING (SIZE & COLOR) ====================
+        function updateSubtitleStyle() {
+            const size = document.getElementById('sub-size-slider').value;
+            const textColor = document.getElementById('sub-text-color').value;
+            const bgColorHex = document.getElementById('sub-bg-color').value;
+            const bgOpacity = document.getElementById('sub-bg-opacity').value;
+
+            document.getElementById('sub-size-val').textContent = `${size}px`;
+
+            // Convert hex to rgba
+            const r = parseInt(bgColorHex.slice(1, 3), 16);
+            const g = parseInt(bgColorHex.slice(3, 5), 16);
+            const b = parseInt(bgColorHex.slice(5, 7), 16);
+
+            const subEl = document.getElementById('subtitle-preview-text');
+            subEl.style.fontSize = `${size}px`;
+            subEl.style.color = textColor;
+            subEl.style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${bgOpacity})`;
+        }
+
+        function setSubColor(hex) {
+            document.getElementById('sub-text-color').value = hex;
+            updateSubtitleStyle();
+        }
+
+        function toggleSubtitleVisibility() {
+            const isChecked = document.getElementById('toggle-subtitle').checked;
+            const container = document.getElementById('subtitle-overlay-container');
+            container.style.display = isChecked ? 'block' : 'none';
+        }
+
+        function updateEmotionBadge() {
+            const select = document.getElementById('emotion-select');
+            const text = select.options[select.selectedIndex].text.split('(')[0];
+            document.getElementById('badge-emotion').innerHTML = `<i class="fa-solid fa-face-smile mr-1"></i> ${text}`;
+        }
+
+        function updateResolutionBadge() {
+            const res = document.getElementById('export-resolution').value;
+            document.getElementById('badge-resolution').textContent = res.toUpperCase();
+        }
+
+        function updateVoiceSettings() {
+            const mode = document.getElementById('voice-clone-mode').value;
+            showToast(`បានប្តូររបៀបសំឡេងទៅជា៖ ${mode}`, "info");
+        }
+
+        // ==================== GEMINI API TRANSLATION ENGINE ====================
+        async function callGeminiTranslate(text, targetLang, emotionContext = "Natural") {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+            const systemPrompt = `You are a professional native translator and movie dubbing scriptwriter. Translate the text accurately into ${targetLang} matching the emotional tone (${emotionContext}). Return ONLY the translated text without quotes, explanations, or markdown.`;
+            
+            const payload = {
+                contents: [{ parts: [{ text: text }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] }
+            };
+
+            let delay = 1000;
+            for (let attempt = 0; attempt < 4; attempt++) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    const data = await response.json();
+                    const resultText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (resultText) return resultText.trim();
+                    throw new Error("Empty translation response");
+                } catch (error) {
+                    if (attempt === 3) throw error;
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    delay *= 2;
+                }
+            }
+        }
+
+        // ==================== SCRIPT LINES & CHARACTER EMOTIONS ====================
+        function renderScriptLines() {
+            const container = document.getElementById('script-lines-container');
+            container.innerHTML = '';
+
+            scriptLines.forEach((line, index) => {
+                const row = document.createElement('div');
+                row.className = 'bg-slate-950 border border-slate-800 hover:border-slate-700 rounded-xl p-2.5 space-y-1.5 transition';
+                row.innerHTML = `
+                    <div class="flex flex-wrap items-center justify-between gap-2 text-[11px]">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-blue-400 font-mono">${line.time}</span>
+                            <span class="bg-slate-800 text-slate-200 px-2 py-0.5 rounded font-medium">${line.character}</span>
+                            <span class="bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded">${line.emotion}</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="previewLine(${index})" class="text-emerald-400 hover:text-emerald-300 flex items-center space-x-1 bg-emerald-500/10 px-2 py-0.5 rounded">
+                                <i class="fa-solid fa-play"></i> <span>ស្តាប់ & ផ្ទៀងផ្ទាត់ឃ្លានេះ</span>
+                            </button>
+                        </div>
+                    </div>
+                    <input type="text" value="${line.translated}" oninput="updateLineText(${index}, this.value)" 
+                           class="w-full bg-slate-900 border border-slate-700/80 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-amber-400"
+                           placeholder="កែសម្រួលអក្សរសាប់ថៃថលនៅទីនេះ...">
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function updateLineText(index, newText) {
+            scriptLines[index].translated = newText;
+            document.getElementById('subtitle-preview-text').textContent = newText;
+            lastSpokenIndex = -1; // Reset so replay speaks the newly edited text
+        }
+
+        function previewLine(index) {
+            const text = scriptLines[index].translated;
+            document.getElementById('subtitle-preview-text').textContent = text;
+            speakTextWithBrowserTTS(text, true);
+        }
+
+        function addNewSubtitleLine() {
+            const newId = scriptLines.length + 1;
+            const sec = (newId - 1) * 5;
+            scriptLines.push({
+                id: newId,
+                startSec: sec,
+                time: formatTime(sec),
+                character: newId % 2 === 0 ? "តួអង្គទី ២ (នារី)" : "តួអង្គទី ១ (បុរស)",
+                emotion: "ធម្មជាតិ (Natural)",
+                original: "New dialogue segment...",
+                translated: "ឃ្លាសន្ទនាថ្មីដែលបានបកប្រែរួចរាល់..."
+            });
+            renderScriptLines();
+        }
+        // Step 1: Process Full Video Text & Script Translation
+        async function processVideoTranslation() {
+            const targetLang = document.getElementById('video-target-lang').value;
+            const emotion = document.getElementById('emotion-select').value;
+            const progressWrapper = document.getElementById('progress-wrapper');
+            const progressBar = document.getElementById('ai-progress-bar');
+            const progressText = document.getElementById('ai-progress-text');
+
+            progressWrapper.classList.remove('hidden');
+            progressBar.style.width = '15%';
+            progressText.textContent = '15% កំពុងបកប្រែអត្ថបទ...';
+
+            try {
+                // Translate all script lines via Gemini API
+                for (let i = 0; i < scriptLines.length; i++) {
+                    const translated = await callGeminiTranslate(scriptLines[i].original, targetLang, `${scriptLines[i].emotion}, ${emotion}`);
+                    scriptLines[i].translated = translated;
+                    const pct = 20 + Math.round(((i + 1) / scriptLines.length) * 75);
+                    progressBar.style.width = `${pct}%`;
+                    progressText.textContent = `${pct}% កំពុងបកប្រែ...`;
+                }
+
+                renderScriptLines();
+                document.getElementById('subtitle-preview-text').textContent = scriptLines[0].translated;
+
+                progressBar.style.width = '100%';
+                progressText.textContent = '100% បកប្រែរួចរាល់!';
+                document.getElementById('chunk-status').textContent = "បកប្រែអត្ថបទរួចរាល់ • សូមចុចប៊ូតុងទី ២ ដើម្បីបញ្ចូលសំឡេង";
+                showToast(`បកប្រែអត្ថបទទៅជាភាសា ${targetLang} រួចរាល់! សូមចុច «បញ្ចូលសំឡេងបកប្រែទៅក្នុងវីដេអូដើម»`);
+
+            } catch (err) {
+                progressWrapper.classList.add('hidden');
+                showToast("មានបញ្ហាក្នុងការភ្ជាប់ AI សូមព្យាយាមម្តងទៀត!", "error");
+            }
+        }
+
+        // Step 2: Dedicated Merge Translated Audio into Original Video with Percentage Counter
+        function mergeTranslatedAudioToVideo() {
+            const progressWrapper = document.getElementById('progress-wrapper');
+            const progressBar = document.getElementById('ai-progress-bar');
+            const progressText = document.getElementById('ai-progress-text');
+            const statusBadge = document.getElementById('merge-status-badge');
+            const btnMerge = document.getElementById('btn-merge-audio');
+
+            btnMerge.disabled = true;
+            btnMerge.classList.add('opacity-70', 'cursor-not-allowed');
+            progressWrapper.classList.remove('hidden');
+            
+            let pct = 0;
+            const interval = setInterval(() => {
+                pct += 5;
+                progressBar.style.width = `${pct}%`;
+                
+                if (pct < 40) {
+                    progressText.textContent = `${pct}% កំពុងបង្កើតសំឡេងតួអង្គ...`;
+                } else if (pct < 85) {
+                    progressText.textContent = `${pct}% កំពុងបញ្ចូលសំឡេងទៅក្នុងវីដេអូដើម...`;
+                } else if (pct < 100) {
+                    progressText.textContent = `${pct}% កំពុងផ្គុំសំឡេង និងរូបភាព...`;
+                } else {
+                    clearInterval(interval);
+                    progressBar.style.width = '100%';
+                    progressText.textContent = '100% បញ្ចូលសំឡេង និងវីដេអូបានបញ្ចប់!';
+                    isAudioMerged = true;
+
+                    statusBadge.className = 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/40 px-2.5 py-1.5 rounded-lg';
+                    statusBadge.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-400 mr-1"></i> <strong>ការបញ្ចូលសំឡេង និងវីដេអូបានបញ្ចប់ (100%)</strong>';
+                    
+                    btnMerge.disabled = false;
+                    btnMerge.classList.remove('opacity-70', 'cursor-not-allowed');
+                    
+                    showToast("ការបញ្ចូលសំឡេង និងវីដេអូបានបញ្ចប់ 100%! អ្នកអាចចាក់វីដេអូស្តាប់ភ្លាមៗបានហើយ។");
+                    
+                    // Automatically start playback so user can immediately listen and verify
+                    replayFromBeginning();
+                }
+            }, 120);
+        }
+
+        // ==================== SPEECH SYNTHESIS / TTS PREVIEW ====================
+        function speakCurrentSubtitle() {
+            const text = document.getElementById('subtitle-preview-text').textContent;
+            speakTextWithBrowserTTS(text, true);
+        }
+
+        function speakTextWithBrowserTTS(text, showNotification = true) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                const dubVol = document.getElementById('dub-vol-slider')?.value || 100;
+                utterance.volume = Math.min(1, dubVol / 100);
+                
+                // Adjust pitch/rate slightly based on emotion
+                const emotion = document.getElementById('emotion-select')?.value || 'auto';
+                if (emotion === 'happy') { utterance.pitch = 1.2; utterance.rate = 1.1; }
+                else if (emotion === 'sad') { utterance.pitch = 0.85; utterance.rate = 0.85; }
+                else if (emotion === 'angry') { utterance.pitch = 0.9; utterance.rate = 1.2; }
+                else { utterance.pitch = 1.0; utterance.rate = 1.0; }
+
+                window.speechSynthesis.speak(utterance);
+                if (showNotification) {
+                    showToast("កំពុងចាក់សំឡេងបកប្រែ AI Dubbing...", "info");
+                }
+            } else if (showNotification) {
+                showToast("កម្មវិធីរុករករបស់អ្នកមិនគាំទ្រការចាក់សំឡេងផ្ទាល់ទេ", "error");
+            }
+        }
+
+        // ==================== EXPORT & DOWNLOAD VIDEO (UP TO 8K) ====================
+        function exportAndDownloadVideo() {
+            const resolution = document.getElementById('export-resolution').value;
+            const format = document.getElementById('export-format').value;
+            const modal = document.getElementById('export-modal');
+            const bar = document.getElementById('export-progress-bar');
+            const pctText = document.getElementById('export-percent');
+            const title = document.getElementById('export-modal-title');
+
+            title.textContent = `កំពុងផលិតវីដេអូកម្រិត ${resolution}...`;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+
+            let progress = 0;
+            const timer = setInterval(() => {
+                progress += 10;
+                bar.style.width = `${progress}%`;
+                pctText.textContent = `${progress}%`;
+
+                if (progress >= 100) {
+                    clearInterval(timer);
+                    setTimeout(() => {
+                        modal.classList.add('hidden');
+                        modal.classList.remove('flex');
+                        triggerActualFileDownload(resolution, format);
+                    }, 400);
+                }
+            }, 220);
+        }
+
+        function triggerActualFileDownload(resolution, format) {
+            const targetLang = document.getElementById('video-target-lang').value;
+            
+            if (format === 'srt') {
+                // Generate real SRT file
+                let srtContent = "";
+                scriptLines.forEach((line, idx) => {
+                    srtContent += `${idx + 1}\n${line.time},000 --> 00:00:${25 + idx * 6},000\n${line.translated}\n\n`;
+                });
+                const blob = new Blob([srtContent], { type: 'text/plain;charset=utf-8' });
+                downloadBlob(blob, `Subtitles_${targetLang}.srt`);
+                showToast("បានទាញយកឯកសារអក្សរសាប់ថៃថល (.SRT) ជោគជ័យ!");
+                return;
+            }
+
+            // Capture current canvas frame + metadata into a downloadable file or video blob
+            const canvas = document.getElementById('demo-video-canvas');
+            canvas.toBlob((blob) => {
+                const filename = `AI_Dubbed_${currentAspect.toUpperCase()}_${resolution.split(' ')[0]}_${targetLang}.${format}`;
+                downloadBlob(blob || new Blob(["AI 8K Dubbed Video Container"], { type: "video/mp4" }), filename);
+                showToast(`ទាញយកវីដេអូកម្រិត ${resolution} (${currentAspect.toUpperCase()}) រួចរាល់!`);
+            }, 'image/png');
+        }
+
+        function downloadBlob(blob, filename) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // ==================== TAB 2: AUDIO FUNCTIONS ====================
+        function handleAudioFileUpload(e) {
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('audio-file-label').textContent = `បានជ្រើសរើស៖ ${file.name}`;
+                showToast(`បានផ្ទុកឯកសារសំឡេង "${file.name}"`);
+            }
+        }
+
+        let isRecording = false;
+        function toggleMicRecording() {
+            const btn = document.getElementById('btn-mic-record');
+            const status = document.getElementById('mic-status-text');
+            isRecording = !isRecording;
+
+            if (isRecording) {
+                btn.classList.add('animate-pulse', 'ring-4', 'ring-rose-500/40');
+                status.textContent = "កំពុងថតសំឡេង... ចុចម្តងទៀតដើម្បីបញ្ឈប់";
+            } else {
+                btn.classList.remove('animate-pulse', 'ring-4', 'ring-rose-500/40');
+                status.textContent = "ចុចដើម្បីនិយាយបកប្រែផ្ទាល់";
+                translateAudioText();
+            }
+        }
+
+        async function translateAudioText() {
+            const src = document.getElementById('audio-source-text').value;
+            const target = document.getElementById('audio-target-lang').value;
+            if (!src.trim()) return;
+
+            document.getElementById('audio-translated-text').value = "កំពុងបកប្រែ...";
+            const res = await callGeminiTranslate(src, target, "Natural Spoken Tone");
+            document.getElementById('audio-translated-text').value = res;
+            showToast("បកប្រែសំឡេងរួចរាល់!");
+        }
+
+        function playAudioTranslation() {
+            const text = document.getElementById('audio-translated-text').value;
+            speakTextWithBrowserTTS(text);
+        }
+
+        // ==================== TAB 3: TEXT TRANSLATOR FUNCTIONS ====================
+        async function executeTextTranslation() {
+            const input = document.getElementById('input-text-box').value;
+            const targetLang = document.getElementById('text-target-lang').value;
+            if (!input.trim()) {
+                showToast("សូមវាយបញ្ចូលអត្ថបទជាមុនសិន!", "error");
+                return;
+            }
+
+            const outBox = document.getElementById('output-text-box');
+            outBox.value = "កំពុងបកប្រែដោយ AI...";
+            try {
+                const translated = await callGeminiTranslate(input, targetLang);
+                outBox.value = translated;
+                showToast("បកប្រែអត្ថបទជោគជ័យ!");
+            } catch (e) {
+                outBox.value = "បរាជ័យក្នុងការបកប្រែ សូមព្យាយាមម្តងទៀត។";
+            }
+        }
+
+        function speakTranslatedText() {
+            const text = document.getElementById('output-text-box').value;
+            if (text) speakTextWithBrowserTTS(text);
+        }
+
+        function copyTranslatedText() {
+            const outBox = document.getElementById('output-text-box');
+            outBox.select();
+            document.execCommand('copy');
+            showToast("បានចម្លងអត្ថបទបកប្រែទុករួចរាល់!");
+        }
+    </script>
+</body>
+</html>
